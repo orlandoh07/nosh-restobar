@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>NOSH — Comida que golpea</title>
         <meta name="description" content="NOSH es un spot de comida rápida en Caracas. Burgers, hot dogs y más en un ambiente relajado y urbano.">
+        <link rel="stylesheet" href="styles.css">
     </head>
     <body>
         <!-- HEADER — Nombre del local y navegación principal -->
@@ -14,7 +15,7 @@
             <nav>
                 <a href="#menu">Menu</a>
                 <a href="#about-us">Sobre nosotros</a>
-                <a href="#pedido">Pedido</a>
+                <a href="#order">Pedido</a>
                 <a href="#contact">Contacto</a>
             </nav>
         </header>
@@ -112,7 +113,7 @@
             </section>
 
             <!-- ORDER FORM — Formulario de pedido en línea -->
-            <section id="pedido">
+            <section id="order">
                 <h2>Haz tu pedido</h2>
 
                 <form action="#" method="POST">
@@ -124,7 +125,7 @@
 
                     <label for="producto">Que quieres pedir?</label>
                     <select id="producto" name="producto">
-                        <option value="">-- Elige tu plato --</option>
+                        <option value="" disabled selected>Elige tu plato</option>
                         <option value="classic">Classic NOSH - $5.00</option>
                         <option value="smash">Double Smash - $7.50</option>
                         <option value="street-dog">Street Dog - $3.00</option>
@@ -146,7 +147,7 @@
 
         <!-- FOOTER — Ubicación, horario, redes y copyright -->
         <footer id="contact">
-            <h2>Encuéntranos</h2>
+            <h2>Ubícanos</h2>
 
             <section>
                 <h3>Ubicación</h3>
@@ -197,6 +198,11 @@
             <p>© 2026 NOSH. Todos los derechos reservados.</p>
         </footer>
 
+        <script>
+            document.getElementById('producto').addEventListener('change', function() {
+                this.style.color = this.value ? '#333333' : '#aaaaaa';
+            });
+        </script>
+
     </body>
 </html>
-<- Prevenir crash en exportación PDF cuando correo de empresa es comentario de prueba -->
