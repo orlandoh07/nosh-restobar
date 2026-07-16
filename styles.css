@@ -68,6 +68,11 @@ header p {
     text-transform: uppercase;
 }
 
+.header-brand {
+  display: flex;
+  flex-direction: column;
+}
+
 nav {
     display: flex;
     gap: 2rem;
@@ -101,7 +106,7 @@ nav a:hover {
     margin-bottom: 1rem;
 }
 
-#hero {
+#hero p {
     font-size: 1.1rem;
     color: #aaaaaa;
     max-width: 500px;
@@ -183,6 +188,13 @@ nav a:hover {
   font-weight: 700;
   color: #e8c547;
   font-size: 1rem;
+}
+
+.product-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.25rem;
 }
 
 /* ABOUT Sección sobre el local */
@@ -322,7 +334,7 @@ button[type="submit"]:hover {
 footer {
     background-color: #1a1a1a;
     color: #cccccc;
-    padding: 4rem 2rem;
+    padding: 6rem 2rem;
     display: flex;
     flex-wrap: wrap;
     gap: 2rem;
