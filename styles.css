@@ -1,3 +1,25 @@
+/* variables */
+:root {
+    /* colores */
+    --color-dark: #1a1a1a;
+    --color-dark-secondary: #2a2a2a;
+    --color-accent: #e8c547;
+    --color-accent-dark: #d4b23a;
+    --color-white: #ffffff;
+    --color-bg-light: #f9f9f9;
+    --color-text: #333333;
+    --color-text-secondary: #666666;
+    --color-text-muted: #aaaaaa;
+    --color-text-label: #555555;
+    --color-text-light: #cccccc;
+    --color-border: #dddddd;
+
+    /* tipografias */
+    --font-heading: 'Oswald', sans-serif;
+    --font-body: 'Inter', sans-serif;
+}
+
+
 /* RESET & BASE Reglas que normalizan el comportamiento del navegador y definen la base */
 * {
     margin: 0;
@@ -7,14 +29,18 @@
 }
 
 body {
-    font-family: sans-serif;
-    color: #333333;
-    background-color: #ffffff;
+    font-family: var(--font-body );
+    color: var(--color-text);
+    background-color: var(--color-white);
     line-height: 1.6;
 
 }
 
 /* TYPOGRAPHY */
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+}
 
 h1 {
     font-size: 2.5rem;
@@ -53,8 +79,8 @@ a {
 /* HEADER */
 
 header {
-    background-color: #1a1a1a;
-    color: #ffffff;
+    background-color: var(--color-dark);
+    color: var(--color-white);
     padding: 1.5rem 2rem;
     display: flex;
     justify-content: space-between;
@@ -63,7 +89,7 @@ header {
 
 header p {
     font-size: 0.85rem;
-    color: #aaaaaa;
+    color: var(--color-text-muted);
     letter-spacing: 2px;
     text-transform: uppercase;
 }
@@ -73,13 +99,18 @@ header p {
   flex-direction: column;
 }
 
+header h1 {
+    font-size: 1,8rem;
+    letter-spacing: 6px;
+}
+
 nav {
     display: flex;
     gap: 2rem;
 }
 
 nav a {
-    color: #ffffff;
+    color: var(--color-white);
     font-size: 0.9rem;
     letter-spacing: 1px;
     text-transform: uppercase;
@@ -87,14 +118,14 @@ nav a {
 }
 
 nav a:hover {
-    color: #e8c547;
+    color: var(--color-accent);
 }
 
 /* HERO Sección de bienvenida */
 
 #hero {
-    background-color: #1a1a1a;
-    color: #ffffff;
+    background-color: var(--color-dark);
+    color: var(--color-white);
     padding: 6rem 2rem;
     text-align: center;
 }
@@ -108,15 +139,15 @@ nav a:hover {
 
 #hero p {
     font-size: 1.1rem;
-    color: #aaaaaa;
+    color: var(--color-text-muted);
     max-width: 500px;
     margin: 0 auto 2rem;
 }
 
 #hero a {
     display: inline-block;
-    background-color: #e8c547;
-    color: #1a1a1a;
+    background-color: var(--color-accent);
+    color: var(--color-dark);
     padding: 0.85rem 2rem;
     font-weight: 700;
     letter-spacing: 2px;
@@ -126,7 +157,7 @@ nav a:hover {
 }
 
 #hero a:hover {
-    background-color: #d4b23a;
+    background-color: var(--color-accent-dark);
 }
 
 
@@ -134,7 +165,7 @@ nav a:hover {
 
 #menu {
     padding: 5rem 2rem;
-    background-color: #f9f9f9;
+    background-color: var(--color-bg-light);
 }
 
 #menu h2 {
@@ -151,7 +182,7 @@ nav a:hover {
 .categoria h3 {
     text-transform: uppercase;
     letter-spacing: 2px;
-    border-bottom: 2px solid #e8c547;
+    border-bottom: 2px solid var(--color-accent);
     padding-bottom: 0.5rem;
     margin-bottom: 1.5rem;
 }
@@ -161,7 +192,7 @@ nav a:hover {
     gap: 1rem;
     align-items: flex-start;
     margin-bottom: 1.5rem;
-    background-color: #ffffff;
+    background-color: var(--color-white);
     padding: 1rem;
     border-radius: 8px;
 }
@@ -179,14 +210,14 @@ nav a:hover {
 }
 
 .producto p {
-    color: #666666;
+    color: var(--color-text-secondary);
     margin-bottom: 0.25rem;
     font-size: 1rem;
 }
 
 .precio {
   font-weight: 700;
-  color: #e8c547;
+  color: var(--color-accent);
   font-size: 1rem;
 }
 
@@ -201,8 +232,8 @@ nav a:hover {
 
 #about-us {
     padding: 5rem 2rem;
-    background-color: #1a1a1a;
-    color: #ffffff;
+    background-color: var(--color-dark);
+    color: var(--color-white);
 }
 
 #about-us h2 {
@@ -215,7 +246,7 @@ nav a:hover {
 #about-us p {
     max-width: 600px;
     margin: 0 auto 1rem;
-    color: #cccccc;
+    color: var(--color-text-light);
     text-align: center;
 }
 
@@ -229,20 +260,20 @@ nav a:hover {
     justify-content: center;
 }
 
-#about-us {
-    background-color: #2a2a2a;
+#about-us li {
+    background-color: var(--color-dark-secondary);
     padding: 0.75rem 1.25rem;
     border-radius: 4px;
     font-size: 0.9rem;
-    color: #cccccc;
-    border-left: 3px solid #e8c547;
+    color: var(--color-text-light);
+    border-left: 3px solid var(--color-accent);
 }
 
 /* ORDER FORM Formulario de pedido */
 
 #order {
     padding: 5rem 2rem;
-    background-color: #f9f9f9;
+    background-color: var(--color-bg-light);
 }
 
 #order h2 {
@@ -265,7 +296,7 @@ label {
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1px;
-    color: #555555;
+    color: var(--color-text-label);
 }
 
 input,
@@ -273,36 +304,36 @@ select,
 textarea {
     width: 100%;
     padding: 0.75rem 1rem;
-    border: 1.5px solid #dddddd;
+    border: 1.5px solid var(--color-border);
     border-radius: 8px;
     font-size: 1rem;
     font-family: inherit;
-    color: #333333;
-    background-color: #ffffff;
+    color: var(--color-text);
+    background-color: var(--color-white);
     transition: border-color 0.2s ease;
 }
 
 select {
-  color: #aaaaaa;
+  color: var(--color-text-muted);
 }
 
 select:has(option:first-child:checked) {
-  color: #aaaaaa;
+  color: var(--color-text-muted);
 }
 
 select.selected {
-  color: #333333;
+  color: var(--color-text);
 }
 
 input:focus,
 select:focus,
 textarea:focus {
     outline: none;
-    border-color: #e8c547;
+    border-color: var(--color-accent);
 }
 
 select option[value=""] {
-  color: #aaaaaa;
+  color: var(--color-text-muted);
 }
 
 input[type="checkbox"] {
@@ -311,8 +342,8 @@ input[type="checkbox"] {
 }
 
 button[type="submit"] {
-    background-color: #1a1a1a;
-    color: #ffffff;
+    background-color: var(--color-dark);
+    color: var(--color-white);
     padding: 0.85rem 2rem;
     border: none;
     border-radius: 4px;
@@ -325,15 +356,15 @@ button[type="submit"] {
 }
 
 button[type="submit"]:hover {
-    background-color: #e8c547;
-    color: #1a1a1a;
+    background-color: var(--color-accent);
+    color: var(--color-dark);
 }
 
 /* FOOTER Pie de página */
 
 footer {
-    background-color: #1a1a1a;
-    color: #cccccc;
+    background-color: var(--color-dark);
+    color: var(--color-text-light);
     padding: 6rem 2rem;
     display: flex;
     flex-wrap: wrap;
@@ -344,14 +375,14 @@ footer {
 footer h2 {
     width: 100%;
     text-align: center;
-    color: #ffffff;
+    color: var(--color-white);
     text-transform: uppercase;
     letter-spacing: 2px;
     margin-bottom: 1rem;
 }
 
 footer h3 {
-    color: #ffffff;
+    color: var(--color-white);
     text-transform: uppercase;
     letter-spacing: 1px;
     margin-bottom: 1rem;
@@ -365,7 +396,7 @@ footer section {
 
 footer p {
     font-size: 0.85rem;
-    color: #666666;
+    color: var(--color-text-secondary);
     width: 100%;
     text-align: center;
     margin-top: 2rem;
@@ -373,14 +404,14 @@ footer p {
 
 footer a {
     display: block;
-    color: #cccccc;
+    color: var(--color-text-light);
     margin-bottom: 0.5rem;
     font-size: 0.9rem;
     transition: color 0.2s ease;
 }
 
 footer a:hover {
-    color: #e8c547;
+    color: var(--color-accent);
 }
 
 footer table {
@@ -391,15 +422,15 @@ footer table {
 
 footer th {
     text-align: left;
-    color: #aaaaaa;
+    color: var(--color-text-muted);
     font-size: 0.8rem;
     padding-bottom: 0.5rem;
-    border-bottom: 1px solid #333333;
+    border-bottom: 1px solid var(--color-dark-secondary);
 }
 
 footer td {
     padding: 0.5rem 0;
-    border-bottom: 1px solid #2a2a2a;
+    border-bottom: 1px solid var(--color-dark-secondary);
 }
 
 footer iframe {
