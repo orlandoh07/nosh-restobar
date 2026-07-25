@@ -37,78 +37,80 @@
             <section id="menu">
                 <h2>Nuestro Menú</h2>
 
-                <div class="categoria">
+                <div class="category">
                     <h3>Burgers</h3>
 
-                    <article class="producto">
+                    <article class="product">
                         <img src="https://via.placeholder.com/300x200"
                             alt="Hamburguesa Classic NOSH con queso americano, lechuga y tomate" loading="lazy">
                         <div class="product-info">
                             <h4>Classic NOSH</h4>
-                            <p>Carne 200g, queso americano, lechuga, tomate y salsa de la casa.</p>
-                            <span class="precio">$5.00</span>
+                            <p>Carne 200g, queso americano, lechuga, tomate y salsa de la casa. 
+                                Preparada al momento con ingredientes frescos seleccionados diariamente 
+                                por nuestro equipo.</p>
+                            <span class="price">$5.00</span>
                         </div>
                     </article>
 
-                    <article class="producto">
+                    <article class="product">
                         <img src="https://via.placeholder.com/300x200"
                             alt="Double Smash burger con doble carne y cebolla caramelizada" loading="lazy">
                         <div class="product-info">
                             <h4>Double Smash</h4>
                             <p>Doble carne smash, doble queso, cebolla caramelizada y pepinillos.</p>
-                            <span class="precio">$7.50</span>
+                            <span class="price">$7.50</span>
                         </div>
                     </article>
 
                 </div>
 
-                <div class="categoria">
+                <div class="category">
                     <h3>Hot Dogs</h3>
 
-                    <article class="producto">
+                    <article class="product">
                         <img src="https://via.placeholder.com/300x200"
                             alt="Street Dog con salchicha ahumada, mostaza y papas ralladas" loading="lazy">
                         <div class="product-info">
                             <h4>Street Dog</h4>
                             <p>Salchicha ahumada, mostaza, ketchup, cebolla y papas fritas (ralladas).</p>
-                            <span class="precio">$4.00</span>
+                            <span class="price">$4.00</span>
                         </div>
                     
                     </article>
 
-                    <article class="producto">
+                    <article class="product">
                         <img src="https://via.placeholder.com/300x200"
                             alt="Bacon Dog con queso derretido y jalapeños" loading="lazy">
                         <div class="product-info">
                             <h4>Bacon Dog</h4>
                             <p>Salchicha envuelta en bacon, queso derretido y jalapeños.</p>
-                            <span class="precio">$5.50</span>
+                            <span class="price">$5.50</span>
                         </div>
                     </article>
 
                 </div>
 
-                <div class="categoria">
+                <div class="category">
                     <h3>Sides & Drinks</h3>
 
-                    <article class="producto">
+                    <article class="product">
                         <img src="https://via.placeholder.com/300x200"
                             alt="Papas fritas con aliño especial y salsa ranch" loading="lazy">
                         <div class="product-info">
                             <h4>Papas NOSH</h4>
                             <p>Papas fritas con aliño especial y salsa ranch.</p>
-                            <span class="precio">$2.50</span>
+                            <span class="price">$2.50</span>
                         </div>
                     
                     </article>
 
-                    <article class="producto">
+                    <article class="product">
                         <img src="https://via.placeholder.com/300x200"
                             alt="Vaso grande de bebida con hielo" loading="lazy">
                         <div class="product-info">
                             <h4>Refresco</h4>
                             <p>Coca-Cola, Nestea o agua. Vaso grande con hielo.</p>
-                            <span class="precio">$1.50</span>
+                            <span class="price">$1.50</span>
                         </div>
                     
                     </article>
@@ -136,14 +138,14 @@
                 <h2>Haz tu pedido</h2>
 
                 <form action="#" method="POST">
-                    <label for="nombre">Nombre y Apellido</label>
-                    <input type="text" id="nombre" name="nombre" placeholder="Como te llamamos?" required>
+                    <label for="full-name">Nombre y Apellido</label>
+                    <input type="text" id="full-name" name="full-name" placeholder="Como te llamamos?" required>
 
-                    <label for="telefono">Teléfono</label>
-                    <input type="tel" id="telefono" name="telefono" placeholder="Tu número de contacto" required>
+                    <label for="phone">Teléfono</label>
+                    <input type="tel" id="phone" name="phone" placeholder="Tu número de contacto" required>
 
-                    <label for="producto">Que quieres pedir?</label>
-                    <select id="producto" name="producto">
+                    <label for="item">Que quieres pedir?</label>
+                    <select id="item" name="item">
                         <option value="" disabled selected>Elige tu plato</option>
                         <option value="classic">Classic NOSH - $5.00</option>
                         <option value="smash">Double Smash - $7.50</option>
@@ -152,11 +154,11 @@
                         <option value="fries">Papas NOSH - $2.50</option>
                     </select>
 
-                    <label for="notas">Notas especiales</label>
-                    <textarea id="notas" name="notas" rows="3" placeholder="Sin cebolla, extra queso..."></textarea>
+                    <label for="notes">Notas especiales</label>
+                    <textarea id="notes" name="notes" rows="3" placeholder="Sin cebolla, extra queso..."></textarea>
 
                     <label>
-                        <input type="checkbox" name="terminos" required>
+                        <input type="checkbox" name="terms" required>
                         Acepto que me llamen para confirmar el pedido
                     </label>
                     <button type="submit">Hacer pedido</button>
@@ -218,8 +220,8 @@
         </footer>
 
         <script>
-            document.getElementById('producto').addEventListener('change', function() {
-                this.style.color = this.value ? '#333333' : '#aaaaaa';
+            document.getElementById('item').addEventListener('change', function() {
+                this.style.color = this.value ? 'var(--color-text)' : 'var(--color-text-muted)';
             });
         </script>
 
