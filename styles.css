@@ -33,7 +33,10 @@ body {
     color: var(--color-text);
     background-color: var(--color-white);
     line-height: 1.6;
+}
 
+section {
+    scroll-margin-top: 90px;
 }
 
 /* TYPOGRAPHY */
@@ -85,6 +88,9 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
 header p {
@@ -181,14 +187,11 @@ nav a:hover {
     width: 100%;
 }
 
-#menu .category {
+.category {
     width: 100%;
     max-width: 800px;
-} 
-
-.category {
     margin-bottom: 3rem;
-}
+} 
 
 .category h3 {
     text-transform: uppercase;
