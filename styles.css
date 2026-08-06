@@ -79,6 +79,11 @@ a {
     text-decoration: none;
 }
 
+img {
+        max-width: 100%;
+        height: auto;
+    }
+
 /* HEADER */
 
 header {
@@ -415,6 +420,7 @@ footer {
         "location schedule social"
         "copy copy copy";
     gap: 2rem;
+    scroll-margin-top: 9    0px;
 }
 
 footer h2 {
@@ -483,13 +489,71 @@ footer iframe {
 }
 
 /* MEDIA QUERIES */
-@media (max-width: 400px) {
-    .product {
+@media (max-width: 768px) {
+    /* NAV */
+    header {
         flex-direction: column;
+        gap: 1rem;
+        padding: 1rem 2rem;
+        text-align: center;
+    }
+
+    nav {
+        gap: 1rem;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    /* MENU */
+    .product {
+        flex-direction: row;
+        align-items: flex-start;
+        margin-bottom: 0;
+        width: 100%;
     }
 
     .product img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        flex-shrink: 0;
+    }
+
+    .product-info {
+        padding: 0.5rem 0;
+    }
+
+    #menu .products-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .category {
         width: 100%;
-        height: 100%;
+        max-width: 100%;
+        padding: 0 0.5rem;
+    }
+
+    .about-inner {
+        grid-template-columns: 1fr;
+        grid-template-areas: 
+            "title"
+            "text"
+            "list";
+    }
+
+    footer {
+        grid-template-columns: 1fr;
+        grid-template-areas: 
+            "title"
+            "location"
+            "schedule"
+            "social"
+            "copy";
+        padding: 3rem 1.5rem;
+        scroll-margin-top: 200px;
+    }
+
+    section {
+        scroll-margin-top: 200px;
     }
 }
