@@ -224,6 +224,8 @@
         </footer>
 
         <script>
+            document.documentElement.classList.add('js-loaded');
+            
             document.getElementById('item').addEventListener('change', function() {
                 this.style.color = this.value ? '#333333' : '#aaaaaa';
             });

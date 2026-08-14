@@ -66,6 +66,19 @@ section {
     color: var(--color-dark);
 }
 
+.js-loaded #hero h2,
+.js-loaded #hero p,
+.js-loaded #hero a,
+.js-loaded #menu h2,
+.js-loaded #about-us h2,
+.js-loaded #order h2,
+.js-loaded footer h2,
+.js-loaded .about-text,
+.js-loaded #about-us ul,
+.js-loaded form {
+  opacity: 0;
+}
+
 /* TYPOGRAPHY */
 
 h1, h2, h3, h4, h5, h6 {
@@ -111,6 +124,50 @@ img {
         height: auto;
     }
 
+/* ANIMATIONS */
+
+@keyframes fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slide-in-left {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slide-in-top {
+    from {
+        opacity: 0;
+        transform: translateY(-100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* HEADER */
 
 header {
@@ -123,6 +180,7 @@ header {
     position: sticky;
     top: 0;
     z-index: 100;
+    animation: slide-in-top 0.5s ease-out forwards;
 }
 
 header p {
@@ -182,12 +240,14 @@ nav a:not(:last-child)::after {
     font-size: 3rem;
     letter-spacing: 3px;
     text-transform: uppercase;
+    animation: fade-in-up 0.7s ease-out forwards;
 }
 
 #hero p {
     font-size: 1.1rem;
     color: var(--color-text-muted); 
     max-width: 500px;
+    animation: fade-in-up 0.7s ease-out 0.15s forwards;
 }
 
 #hero a {
@@ -200,6 +260,7 @@ nav a:not(:last-child)::after {
     text-transform: uppercase;
     border-radius: var(--radius-sm);
     transition: background-color var(--transition-normal);
+    animation: fade-in-up 0.7s ease-out forwards;
 }
 
 #hero a:hover {
@@ -223,6 +284,8 @@ nav a:not(:last-child)::after {
     text-transform: uppercase;
     letter-spacing: 2px;
     width: 100%;
+    opacity: 0;
+    animation: fade-in 0.6s ease-out 0.2s forwards;
 }
 
 .category {
@@ -326,11 +389,15 @@ nav a:not(:last-child)::after {
     text-transform: uppercase;
     letter-spacing: 2px;
     margin-bottom: 0;
+    opacity: 0;
+    animation: fade-in 0.6s ease-out 0.2s forwards;
 }
 
 .about-text {
     grid-area: text;
     color: var(--color-text-light);
+    opacity: 0;
+    animation: slide-in-left 0.7s ease-out 0.3s forwards;
 }
 
 #about-us p {
@@ -340,7 +407,6 @@ nav a:not(:last-child)::after {
     text-align: left;
 }
 
-
 #about-us ul {
     grid-area: list;
     list-style: none;
@@ -348,6 +414,8 @@ nav a:not(:last-child)::after {
     flex-direction: column;
     gap: 0.75rem;
     margin: 0;
+    opacity: 0;
+    animation: fade-in-up 0.7s ease-out 0.5s forwards;
 }
 
 #about-us li {
@@ -375,6 +443,8 @@ nav a:not(:last-child)::after {
     letter-spacing: 2px;
     margin-bottom: 2rem;
     width: 100%;
+    opacity: 0;
+    animation: fade-in 0.6s ease-out 0.2s forwards;
 }
 
 form {
@@ -383,6 +453,8 @@ form {
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    opacity: 1;
+    animation: fade-in-up 0.7s ease-out forwards;
 }
 
 label {
@@ -488,6 +560,8 @@ footer h2 {
     text-transform: uppercase;
     letter-spacing: 2px;
     margin-bottom: 0;
+    opacity: 0;
+    animation: fade-in 0.6s ease-out 0.2s forwards;
 }
 
 footer section:nth-child(2) { grid-area: location; }
@@ -551,6 +625,20 @@ footer tr:last-child td {
 }
 
 /* MEDIA QUERIES */
+
+/* ACCESIBILIDAD - reducir movimiento */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms!important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
 @media (max-width: 768px) {
     /* NAV */
     header {
