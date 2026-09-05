@@ -17,18 +17,6 @@ const business = {
   }
 }
 
-// Current status
-const currentTime = new Date().getHours()
-const isOpen = currentTime >= business.schedule.open && 
-               currentTime < business.schedule.close
-
-const businessStatus = isOpen ? "Open now" : "Closed now"
-
-// Greeting based on time
-const greeting = currentTime < 12 ? "Good Morning" :
-                 currentTime < 18 ? "Good Afternoon" : 
-                 "Good Evening"
-
 // Schedule by day
 const today = new Date().getDay()
 // 0 = Sunday, 1 = Monday, 2 = Tuesday, 3 = Wednesday, 4 = Thursday, 5 = Friday, 6 = Saturday
@@ -51,6 +39,9 @@ switch (today) {
     todaySchedule = "Schedule not available"
 }
 
+// Current time
+const currentTime = new Date().getHours()
+
 // Menu Items
 const menuItems = [
   {name: "Classic NOSH", price: 5.00 , category: "burger"},
@@ -60,3 +51,60 @@ const menuItems = [
   {name: "Papas NOSH", price: 2.50, category: "sides"},
   {name: "Refresco", price: 1.50, category: "sides"},
 ]
+
+// FUNCTIONS
+const getGreeting = (hour) => {
+  if (hour < 12) return "Good Morning"
+  if (hour < 18) return "Good Afternoon"
+  return "Good Evening"
+}
+
+// Calculates total price of an order
+const calculateOrderTotal = (price, quantity, taxRate = 0.16) => {
+  const subtotal = price * quantity
+  const tax = subtotal * taxRate
+  const total = subtotal + tax
+  return total.toFixed(2)
+}
+
+// Return products filtered by category
+const getProductsByCategory = (items, category) => {
+  const filtered = []
+
+  for (const item of items) {
+    if (item.category === category) {
+      filtered.push(item)
+    }
+  }
+
+  return filtered
+}
+
+// Returns business status based on current hour
+const getBusinessStatus = (hour, schedule) => {
+  const isCurrentlyOpen = hour >= schedule.open && hour < schedule.close
+  return {
+    isOpen: isCurrentlyOpen,
+    status: isCurrentlyOpen ? "Open now" : "Closed now",
+    schedule: isCurrentlyOpen
+      ? `Closes at ${schedule.close}:00`
+      : `Opens at ${schedule.open}:00`
+  }
+}
+
+const status = getBusinessStatus(currentTime, business.schedule)
+
+// Formats a number as price string
+const formatPrice = (price) => `$${parseFloat(price).toFixed(2)}`
+
+// Using functions together
+const orderSummary = (itemName, price, quantity) => {
+  const item = menuItems.find(i => i.name === itemName)
+
+  if (!item) return "Product not found"
+
+  const total = calculateOrderTotal(item.price, quantity)
+  const formattedTotal = formatPrice(total)
+
+  return `Order: ${item.name} x${quantity} = ${formattedTotal}`
+}
