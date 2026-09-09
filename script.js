@@ -53,6 +53,8 @@ const menuItems = [
 ]
 
 // FUNCTIONS
+
+// Returns greeting based on current hour
 const getGreeting = (hour) => {
   if (hour < 12) return "Good Morning"
   if (hour < 18) return "Good Afternoon"
@@ -68,17 +70,8 @@ const calculateOrderTotal = (price, quantity, taxRate = 0.16) => {
 }
 
 // Return products filtered by category
-const getProductsByCategory = (items, category) => {
-  const filtered = []
-
-  for (const item of items) {
-    if (item.category === category) {
-      filtered.push(item)
-    }
-  }
-
-  return filtered
-}
+const getProductsByCategory = (items, category) =>
+  items.filter(item => item.category === category)
 
 // Returns business status based on current hour
 const getBusinessStatus = (hour, schedule) => {
@@ -97,14 +90,27 @@ const status = getBusinessStatus(currentTime, business.schedule)
 // Formats a number as price string
 const formatPrice = (price) => `$${parseFloat(price).toFixed(2)}`
 
-// Using functions together
+// Order summary
 const orderSummary = (itemName, price, quantity) => {
   const item = menuItems.find(i => i.name === itemName)
-
   if (!item) return "Product not found"
-
   const total = calculateOrderTotal(item.price, quantity)
   const formattedTotal = formatPrice(total)
-
   return `Order: ${item.name} x${quantity} = ${formattedTotal}`
 }
+
+// Calculate total value of all menu items
+const getMenuTotal = (items) => 
+  items.reduce((acc, item) => acc + item.price, 0).toFixed(2)
+
+// Returns menu items formatted for display
+const getFormattedMenu = (items) =>
+  items.map(({name, price, category}) => ({
+    name,
+    price: formatPrice(price),
+    category 
+  }))
+
+// Returns combined items from multiple categories
+const getItemsByCategories = (items, ...categories) =>
+  categories.flatMap(category => getProductsByCategory(items, category))
