@@ -44,12 +44,12 @@ const currentTime = new Date().getHours()
 
 // Menu Items
 const menuItems = [
-  {name: "Classic NOSH", price: 5.00 , category: "burger"},
-  {name: "Double Smash", price: 7.50, category: "burger"},
-  {name: "Street Dog", price: 4.00, category: "hotdog"},
-  {name: "Bacon Dog", price: 5.50, category: "hotdog"},
-  {name: "Papas NOSH", price: 2.50, category: "sides"},
-  {name: "Refresco", price: 1.50, category: "sides"},
+  { name: "Classic NOSH", price: 5.00, category: "burger", description: "Carne 200g, queso americano, lechuga, tomate y salsa de la casa." },
+  { name: "Double Smash", price: 7.50, category: "burger", description: "Doble carne smash, doble queso, cebolla caramelizada y pepinillos." },
+  { name: "Street Dog", price: 4.00, category: "hotdog", description: "Salchicha ahumada, mostaza, ketchup, cebolla y papas fritas (ralladas)." },
+  { name: "Bacon Dog", price: 5.50, category: "hotdog", description: "Salchicha envuelta en bacon, queso derretido y jalapeños." },
+  { name: "Papas NOSH", price: 2.50, category: "sides", description: "Papas fritas con aliño especial y salsa ranch." },
+  { name: "Refresco", price: 1.50, category: "sides", description: "Coca-Cola, Nestea o agua. Vaso grande con hielo." }
 ]
 
 // FUNCTIONS
@@ -114,3 +114,79 @@ const getFormattedMenu = (items) =>
 // Returns combined items from multiple categories
 const getItemsByCategories = (items, ...categories) =>
   categories.flatMap(category => getProductsByCategory(items, category))
+
+// DOM MANIPULATION
+
+// update hero with dinamic greeting
+const heroTitle = document.querySelector("#hero h2")
+const heroSubtitle = document.querySelector("#hero p")
+
+if (heroTitle) {
+  heroTitle.textContent= `${getGreeting(currentTime)}, welcome to ${business.name}!` 
+}
+
+if (heroSubtitle) {
+  heroSubtitle.textContent = business.slogan
+}
+
+// update business status in header
+const statusElement = document.getElementById("business-status")
+
+if(statusElement) {
+  statusElement.textContent = status.status
+  statusElement.classList.add(status.isOpen ? "status--open" : "status--closed")
+}
+
+//render menu dinamically
+const menuContainer = document.getElementById("menu-container")
+
+if (menuContainer){
+  const categories = ["burger", "hotdog", "sides"]
+  const categoryNames = {
+    burger: "Burgers",
+    hotdog: "Hot Dogs",
+    sides: "Sides & Drinks"
+  }
+
+  categories.forEach(category =>{
+    const products = getProductsByCategory(menuItems, category)
+
+    const categoryHTML = `
+      <div class="category">
+        <h3>${categoryNames[category]}</h3>
+        <div class="products-grid">
+          ${products.map(({ name, price, description }) => `
+            <article class="product">
+              <img src="https://via.placeholder.com/300x200"
+                  alt="${name}"
+                  loading="lazy">
+              <div class="product-info">
+                <h4>${name}</h4>
+                <p>${description}</p>
+                <span class="price">${formatPrice(price)}</span>
+              </div>
+            </article>
+          `).join("")}
+        </div>
+      </div>
+    `
+
+    menuContainer.insertAdjacentHTML("beforeend", categoryHTML)
+  })
+}
+
+// Highlight today's schedule in footer
+const scheduleRows = document.querySelectorAll("footer tbody tr")
+const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+
+scheduleRows.forEach((row, index) => {
+  const firstCell = row.querySelector("td")
+  if (firstCell) {
+    if (index === 0 && today >= 1 && today <= 5) {
+      row.classList.add("schedule--active")
+    }
+    if (index === 1 && (today === 0 || today === 6)) {
+      row.classList.add("schedule--active")
+    }
+  }
+})

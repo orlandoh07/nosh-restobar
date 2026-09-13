@@ -223,6 +223,26 @@ nav a:not(:last-child)::after {
     color: var(--color-text-muted);
 }
 
+#business-status {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
+    align-self: flex-start;
+}
+
+.status--open {
+    background-color: #2d6a2d;
+    color: #90ee90;
+}
+
+.status--closed {
+    background-color: #6a2d2d;
+    color: #ffb3b3;
+}
+
 /* HERO Sección de bienvenida */
 
 #hero {
@@ -613,6 +633,11 @@ footer iframe {
 
 footer tr:last-child td {
     border-bottom: none;
+}
+
+.schedule--active {
+    color: var(--color-accent);
+    font-weight: 600;
 }
 
 /* MEDIA QUERIES */
