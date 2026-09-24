@@ -243,6 +243,25 @@ nav a:not(:last-child)::after {
     color: #ffb3b3;
 }
 
+#menu-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+
+#menu-toggle span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background-color: var(--color-white);
+  transition: transform var(--transition-normal),
+              opacity var(--transition-normal);
+}
+
 /* HERO Sección de bienvenida */
 
 #hero {
@@ -382,6 +401,12 @@ nav a:not(:last-child)::after {
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 1rem;
 }
+
+.product--selected {
+    border: 2px solid var(--color-accent);
+    box-shadow: var(--shadow-md);
+}
+
 
 /* ABOUT Sección sobre el local */
 
@@ -641,108 +666,107 @@ footer tr:last-child td {
 }
 
 /* MEDIA QUERIES */
-
-/* ACCESIBILIDAD - reducir movimiento */
-
 @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-        animation-duration: 0.01ms!important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
-    }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (hover: none) {
+  .product:hover {
+    transform: none;
+    box-shadow: none;
+  }
+  nav a:hover { color: var(--color-white); }
+  #hero a:hover { background-color: var(--color-accent); }
+  button[type="submit"]:hover {
+    background-color: var(--color-dark);
+    color: var(--color-white);
+  }
+  footer a:hover { color: var(--color-text-light); }
 }
 
 @media (max-width: 768px) {
-    /* NAV */
-    header {
-        flex-direction: column;
-        gap: 1rem;
-        padding: 1rem 2rem;
-        text-align: center;
-    }
+  header {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem 2rem;
+    text-align: center;
+  }
 
-    nav {
-        gap: 1rem;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
+  nav {
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 
-    /* MENU */
-    .product {
-        flex-direction: row;
-        align-items: flex-start;
-        margin-bottom: 0;
-        width: 100%;
-    }
+  .product {
+    flex-direction: row;
+    align-items: flex-start;
+    margin-bottom: 0;
+    width: 100%;
+  }
 
-    .product img {
-        width: 80px;
-        height: 80px;
-        object-fit: cover;
-        flex-shrink: 0;
-    }
+  .product img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
 
-    .product-info {
-        padding: 0.5rem 0;
-    }
+  .product-info {
+    padding: 0.5rem 0;
+  }
 
-    #menu .products-grid {
-        grid-template-columns: 1fr;
-    }
+  #menu .products-grid {
+    grid-template-columns: 1fr;
+  }
 
-    .category {
-        width: 100%;
-        max-width: 100%;
-        padding: 0 0.5rem;
-    }
+  .category {
+    width: 100%;
+    max-width: 100%;
+    padding: 0 0.5rem;
+  }
 
-    .about-inner {
-        grid-template-columns: 1fr;
-        grid-template-areas: 
-            "title"
-            "text"
-            "list";
-    }
+  .about-inner {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "title"
+      "text"
+      "list";
+  }
 
-    footer {
-        grid-template-columns: 1fr;
-        grid-template-areas: 
-            "title"
-            "location"
-            "schedule"
-            "social"
-            "copy";
-        padding: 3rem 1.5rem;
-        scroll-margin-top: 200px;
-    }
+  footer {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "title"
+      "location"
+      "schedule"
+      "social"
+      "copy";
+    padding: 3rem 1.5rem;
+    scroll-margin-top: 200px;
+  }
 
-    section {
-        scroll-margin-top: 200px;
-    } 
-}
-@media (hover: none) {
-        .product:hover {
-        transform: none;
-        box-shadow: none;
-    }
+  section {
+    scroll-margin-top: 200px;
+  }
 
-    nav a:hover {
-        color: var(--color-white);
-    }
+  #menu-toggle {
+  display: flex;
+  }
 
-    #hero a:hover {
-        background-color: var(--color-accent);
-    }
-
-    button[type="submit"]:hover {
-        background-color: var(--color-dark);
-        color: var(--color-white);
-    }
-
-    footer a:hover {
-        color: var(--color-text-light);
-    }
+  nav {
+    display: none;
+    width: 100%;
+  }
+  
+  nav.nav--open {
+    display: flex;
+  }
 }

@@ -115,6 +115,18 @@ const getFormattedMenu = (items) =>
 const getItemsByCategories = (items, ...categories) =>
   categories.flatMap(category => getProductsByCategory(items, category))
 
+// Find product by its form value
+const getProductByValue = (value) => {
+  const valueMap = {
+    "classic": "Classic NOSH",
+    "smash": "Double Smash",
+    "street-dog": "Street Dog",
+    "bacon-dog": "Bacon Dog",
+    "fries": "Papas NOSH"
+  }
+  return menuItems.find(item => item.name === valueMap[value])
+}
+
 // DOM MANIPULATION
 
 // update hero with dinamic greeting
@@ -189,4 +201,94 @@ scheduleRows.forEach((row, index) => {
       row.classList.add("schedule--active")
     }
   }
+})
+
+// Form submission
+const orderForm = document.querySelector("form")
+
+if (orderForm) {
+  orderForm.addEventListener("submit", (e) => {
+    e.preventDefault()
+
+    const formData = {
+      name: document.getElementById("full-name").value,
+      phone: document.getElementById("phone").value,
+      item: document.getElementById("item").value,
+      notes: document.getElementById("notes").value
+    }
+
+    if (!formData.item) {
+      alert("Please select a menu item")
+      return
+    }
+
+    const product = getProductByValue(formData.item)
+
+    if (!product) {
+      alert("Product not found")
+      return
+    }
+
+    const total = calculateOrderTotal(product.price, 1)
+    const formattedTotal = formatPrice(total)
+
+    alert(`Order received!\n${product.name} - ${formattedTotal}\n\nWe'll call ${formData.name} at ${formData.phone} to confirm.`)
+
+    orderForm.reset()
+  })
+}
+
+// Product selection via event delegation
+const menuContainerEl = document.getElementById("menu-container")
+
+if (menuContainerEl) {
+  menuContainerEl.addEventListener("click", (e) => {
+    console.log("Container clicked")
+    const product = e.target.closest(".product")
+
+    if (product) {
+      document.querySelectorAll(".product").forEach(p => {
+        p.classList.remove("product--selected")
+      })
+
+      product.classList.add("product--selected")
+      console.log("Classes after add:", product.classList.toString())
+      console.log("Still in DOM:", document.contains(product))
+
+      const productName = product.querySelector("h4").textContent
+      // ... resto del código
+    }
+  })
+}
+
+// Close selection with Escape key
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    document.querySelectorAll(".product").forEach(p => {
+      p.classList.remove("product--selected")
+    })
+
+    const select = document.getElementById("item")
+    if (select) {
+      select.value = ""
+      select.style.color = "#aaaaaa"
+    }
+  }
+})
+
+// Hamburger menu
+const menuToggle = document.getElementById("menu-toggle")
+const navMenu = document.querySelector("nav")
+
+if (menuToggle && navMenu) {
+  menuToggle.addEventListener("click", () => {
+    navMenu.classList.toggle("nav--open")
+  })
+}
+
+// Close menu when a nav link is clicked
+navMenu.querySelectorAll("a").forEach(link => {
+  link.addEventListener("click", () => {
+    navMenu.classList.remove("nav--open")
+  })
 })
