@@ -1,3 +1,5 @@
+import { saveData, getData } from "./storage.js"
+
 // Animation system
 document.documentElement.classList.add('js-loaded')
 
@@ -10,10 +12,9 @@ document.getElementById('item').addEventListener('change', function() {
 const business = {
   name: "NOSH",
   slogan: "Comida que golpea",
-  isOpen: true,
   schedule: {
-    open: 11,
-    close: 23
+    weekday: { open: 11, close: 23 },
+    weekend: { open: 11, close: 2 }   // closes next day at 2am
   }
 }
 
@@ -21,35 +22,17 @@ const business = {
 const today = new Date().getDay()
 // 0 = Sunday, 1 = Monday, 2 = Tuesday, 3 = Wednesday, 4 = Thursday, 5 = Friday, 6 = Saturday
 
-let todaySchedule
-
-switch (today) {
-  case 1:
-  case 2:
-  case 3:
-  case 4:
-  case 5:
-    todaySchedule = "Open from 11:00am to 11:00pm"
-    break
-  case 0:
-  case 6:
-    todaySchedule = "Open from 11:00am to 2:00pm"
-    break
-  default: 
-    todaySchedule = "Schedule not available"
-}
-
 // Current time
 const currentTime = new Date().getHours()
 
 // Menu Items
 const menuItems = [
-  { name: "Classic NOSH", price: 5.00, category: "burger", description: "Carne 200g, queso americano, lechuga, tomate y salsa de la casa." },
-  { name: "Double Smash", price: 7.50, category: "burger", description: "Doble carne smash, doble queso, cebolla caramelizada y pepinillos." },
-  { name: "Street Dog", price: 4.00, category: "hotdog", description: "Salchicha ahumada, mostaza, ketchup, cebolla y papas fritas (ralladas)." },
-  { name: "Bacon Dog", price: 5.50, category: "hotdog", description: "Salchicha envuelta en bacon, queso derretido y jalapeños." },
-  { name: "Papas NOSH", price: 2.50, category: "sides", description: "Papas fritas con aliño especial y salsa ranch." },
-  { name: "Refresco", price: 1.50, category: "sides", description: "Coca-Cola, Nestea o agua. Vaso grande con hielo." }
+  { value: "classic", name: "Classic NOSH", price: 5.00, category: "burger", description: "Carne 200g, queso americano, lechuga, tomate y salsa de la casa." },
+  { value: "smash", name: "Double Smash", price: 7.50, category: "burger", description: "Doble carne smash, doble queso, cebolla caramelizada y pepinillos." },
+  { value: "street-dog", name: "Street Dog", price: 4.00, category: "hotdog", description: "Salchicha ahumada, mostaza, ketchup, cebolla y papas fritas (ralladas)." },
+  { value: "bacon-dog", name: "Bacon Dog", price: 5.50, category: "hotdog", description: "Salchicha envuelta en bacon, queso derretido y jalapeños." },
+  { value: "fries", name: "Papas NOSH", price: 2.50, category: "sides", description: "Papas fritas con aliño especial y salsa ranch." },
+  { value: "soda", name: "Refresco", price: 1.50, category: "sides", description: "Coca-Cola, Nestea o agua. Vaso grande con hielo." }
 ]
 
 // FUNCTIONS
@@ -73,25 +56,36 @@ const calculateOrderTotal = (price, quantity, taxRate = 0.16) => {
 const getProductsByCategory = (items, category) =>
   items.filter(item => item.category === category)
 
-// Returns business status based on current hour
-const getBusinessStatus = (hour, schedule) => {
-  const isCurrentlyOpen = hour >= schedule.open && hour < schedule.close
+// Returns business status for a given day and hour
+const getBusinessStatus = (day, hour, schedule) => {
+  const isWeekend = (d) => d === 0 || d === 6
+  const hoursFor = (d) => (isWeekend(d) ? schedule.weekend : schedule.weekday)
+  const crossesMidnight = ({ open, close }) => close < open
+
+  const todayHours = hoursFor(day)
+  const yesterdayHours = hoursFor((day + 6) % 7)
+
+  const openFromToday =
+    hour >= todayHours.open &&
+    (crossesMidnight(todayHours) || hour < todayHours.close)
+  const openFromYesterday =
+    crossesMidnight(yesterdayHours) && hour < yesterdayHours.close
+
+  const isCurrentlyOpen = openFromToday || openFromYesterday
+
   return {
     isOpen: isCurrentlyOpen,
-    status: isCurrentlyOpen ? "Open now" : "Closed now",
-    schedule: isCurrentlyOpen
-      ? `Closes at ${schedule.close}:00`
-      : `Opens at ${schedule.open}:00`
+    status: isCurrentlyOpen ? "Open now" : "Closed now"
   }
 }
 
-const status = getBusinessStatus(currentTime, business.schedule)
+const businessStatus = getBusinessStatus(today, currentTime, business.schedule)
 
 // Formats a number as price string
 const formatPrice = (price) => `$${parseFloat(price).toFixed(2)}`
 
 // Order summary
-const orderSummary = (itemName, price, quantity) => {
+const orderSummary = (itemName, quantity) => {
   const item = menuItems.find(i => i.name === itemName)
   if (!item) return "Product not found"
   const total = calculateOrderTotal(item.price, quantity)
@@ -115,19 +109,64 @@ const getFormattedMenu = (items) =>
 const getItemsByCategories = (items, ...categories) =>
   categories.flatMap(category => getProductsByCategory(items, category))
 
-// Find product by its form value
-const getProductByValue = (value) => {
-  const valueMap = {
-    "classic": "Classic NOSH",
-    "smash": "Double Smash",
-    "street-dog": "Street Dog",
-    "bacon-dog": "Bacon Dog",
-    "fries": "Papas NOSH"
+// Returns product object from select option value
+const getProductByValue = (value) =>
+  menuItems.find(item => item.value === value)
+
+// ========================
+// API CALLS
+// ========================
+
+// Fetch food images from DummyJSON
+const fetchMenuImages = async () => {
+  const productImages = document.querySelectorAll(".product img")
+
+  // Loading state
+  productImages.forEach(img => {
+    img.style.opacity = "0.3"
+  })
+
+  try {
+    const response = await fetch("https://dummyjson.com/recipes?limit=6")
+
+    if (!response.ok) {
+      throw new Error(`HTTP error: ${response.status}`)
+    }
+
+    const data = await response.json()
+    const images = data.recipes.map(recipe => recipe.image)
+
+    // Success state
+        // Success state
+    productImages.forEach((img, index) => {
+      if (!images[index]) {
+        img.style.opacity = "1"
+        return
+      }
+
+      img.onload = () => {
+        img.style.transition = "opacity 0.3s ease"
+        img.style.opacity = "1"
+      }
+      img.onerror = () => {
+        img.style.opacity = "1"
+      }
+      img.src = images[index]
+    })
+
+  } catch (error) {
+    console.error("Failed to fetch menu images:", error)
+
+    // Error state
+    productImages.forEach(img => {
+      img.style.opacity = "1"
+    })
   }
-  return menuItems.find(item => item.name === valueMap[value])
 }
 
+// ================
 // DOM MANIPULATION
+// ================
 
 // update hero with dinamic greeting
 const heroTitle = document.querySelector("#hero h2")
@@ -145,8 +184,8 @@ if (heroSubtitle) {
 const statusElement = document.getElementById("business-status")
 
 if(statusElement) {
-  statusElement.textContent = status.status
-  statusElement.classList.add(status.isOpen ? "status--open" : "status--closed")
+  statusElement.textContent = businessStatus.status
+  statusElement.classList.add(businessStatus.isOpen ? "status--open" : "status--closed")
 }
 
 //render menu dinamically
@@ -167,8 +206,8 @@ if (menuContainer){
       <div class="category">
         <h3>${categoryNames[category]}</h3>
         <div class="products-grid">
-          ${products.map(({ name, price, description }) => `
-            <article class="product">
+          ${products.map(({ value, name, price, description }) => `
+            <article class="product" data-value="${value}">
               <img src="https://via.placeholder.com/300x200"
                   alt="${name}"
                   loading="lazy">
@@ -185,21 +224,42 @@ if (menuContainer){
 
     menuContainer.insertAdjacentHTML("beforeend", categoryHTML)
   })
+
+  fetchMenuImages()
+}
+
+// Fill order select from menuItems
+const itemSelect = document.getElementById("item")
+
+if (itemSelect) {
+  menuItems.forEach(({ value, name, price }) => {
+    itemSelect.insertAdjacentHTML(
+      "beforeend",
+      `<option value="${value}">${name} - ${formatPrice(price)}</option>`
+    )
+  })
+}
+
+// Restore previously selected product
+const savedValue = getData("selectedProduct")
+const savedItem = menuItems.find(item => item.value === savedValue)
+
+if (savedItem && itemSelect) {
+  const card = document.querySelector(`.product[data-value="${savedItem.value}"]`)
+  card?.classList.add("product--selected")
+  itemSelect.value = savedItem.value
+  itemSelect.style.color = "#333333"
+} else if (savedValue) {
+  removeData("selectedProduct")   // había un dato guardado, pero no es válido
 }
 
 // Highlight today's schedule in footer
 const scheduleRows = document.querySelectorAll("footer tbody tr")
-const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+const isWeekday = today >= 1 && today <= 5
 
 scheduleRows.forEach((row, index) => {
-  const firstCell = row.querySelector("td")
-  if (firstCell) {
-    if (index === 0 && today >= 1 && today <= 5) {
-      row.classList.add("schedule--active")
-    }
-    if (index === 1 && (today === 0 || today === 6)) {
-      row.classList.add("schedule--active")
-    }
+  if ((index === 0 && isWeekday) || (index === 1 && !isWeekday)) {
+    row.classList.add("schedule--active")
   }
 })
 
@@ -232,9 +292,25 @@ if (orderForm) {
     const total = calculateOrderTotal(product.price, 1)
     const formattedTotal = formatPrice(total)
 
+    // save order
+    const order = {
+      customer: formData.name,
+      phone: formData.phone,
+      product: product.name,
+      total: formattedTotal,
+      notes: formData.notes,
+      timestamp: new Date().toLocaleString()
+    }
+
+    saveData("lastOrder", order)
+
     alert(`Order received!\n${product.name} - ${formattedTotal}\n\nWe'll call ${formData.name} at ${formData.phone} to confirm.`)
 
     orderForm.reset()
+    document.getElementById("item").style.color = ""
+    document.querySelector(".product--selected")?.classList.remove("product--selected")
+    removeData("selectedProduct")
+    renderLastOrder()
   })
 }
 
@@ -243,37 +319,40 @@ const menuContainerEl = document.getElementById("menu-container")
 
 if (menuContainerEl) {
   menuContainerEl.addEventListener("click", (e) => {
-    console.log("Container clicked")
     const product = e.target.closest(".product")
+    if (!product) return
 
-    if (product) {
-      document.querySelectorAll(".product").forEach(p => {
-        p.classList.remove("product--selected")
-      })
-
-      product.classList.add("product--selected")
-      console.log("Classes after add:", product.classList.toString())
-      console.log("Still in DOM:", document.contains(product))
-
-      const productName = product.querySelector("h4").textContent
-      // ... resto del código
-    }
-  })
-}
-
-// Close selection with Escape key
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") {
     document.querySelectorAll(".product").forEach(p => {
       p.classList.remove("product--selected")
     })
+    product.classList.add("product--selected")
 
     const select = document.getElementById("item")
     if (select) {
-      select.value = ""
-      select.style.color = "#aaaaaa"
+      select.value = product.dataset.value
+      select.style.color = "#333333"
     }
+
+    saveData("selectedProduct", product.dataset.value)
+  })
+}
+
+// Clear selection with Escape key
+document.addEventListener("keydown", (e) => {
+  if (e.key !== "Escape") return
+
+  const selected = document.querySelector(".product--selected")
+  if (!selected) return
+
+  selected.classList.remove("product--selected")
+
+  const select = document.getElementById("item")
+  if (select) {
+    select.value = ""
+    select.style.color = ""
   }
+
+  removeData("selectedProduct")
 })
 
 // Hamburger menu
@@ -284,11 +363,38 @@ if (menuToggle && navMenu) {
   menuToggle.addEventListener("click", () => {
     navMenu.classList.toggle("nav--open")
   })
+
+  // Close menu when a nav link is clicked
+  navMenu.querySelectorAll("a").forEach(link => {
+    link.addEventListener("click", () => {
+      navMenu.classList.remove("nav--open")
+    })
+  })
 }
 
-// Close menu when a nav link is clicked
-navMenu.querySelectorAll("a").forEach(link => {
-  link.addEventListener("click", () => {
-    navMenu.classList.remove("nav--open")
-  })
-})
+
+// Show last order if exists
+const renderLastOrder = () => {
+  const lastOrder = getData("lastOrder")
+  const heading = document.querySelector("#order h2")
+  if (!lastOrder?.product || !lastOrder?.total || !heading) return
+
+  document.querySelector(".last-order")?.remove()
+
+  const box = document.createElement("div")
+  box.className = "last-order"
+
+  const summary = document.createElement("p")
+  const strong = document.createElement("strong")
+  strong.textContent = lastOrder.product
+  summary.append("Your last order: ", strong, ` — ${lastOrder.total}`)
+
+  const time = document.createElement("p")
+  time.className = "last-order__time"
+  time.textContent = `Ordered on ${lastOrder.timestamp}`
+
+  box.append(summary, time)
+  heading.after(box)
+}
+
+renderLastOrder()

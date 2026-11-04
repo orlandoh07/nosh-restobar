@@ -665,6 +665,27 @@ footer tr:last-child td {
     font-weight: 600;
 }
 
+.last-order {
+  background-color: var(--color-dark);
+  color: var(--color-text-light);
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  margin-bottom: 1.5rem;
+  border-left: 3px solid var(--color-accent);
+  max-width: 500px;
+  margin: 0 auto 1.5rem;
+}
+
+.last-order strong {
+  color: var(--color-accent);
+}
+
+.last-order__time {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  margin-top: 0.25rem;
+}
+
 /* MEDIA QUERIES */
 @media (prefers-reduced-motion: reduce) {
   *,
