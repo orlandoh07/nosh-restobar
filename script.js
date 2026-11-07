@@ -1,4 +1,5 @@
-import { saveData, getData } from "./storage.js"
+import { saveData, getData, removeData } from "./storage.js"
+import { addToCart, changeQuantity, removeFromCart, getCartTotal, sanitizeCart } from "./cart.js"
 
 // Animation system
 document.documentElement.classList.add('js-loaded')
@@ -11,7 +12,7 @@ document.getElementById('item').addEventListener('change', function() {
 // Business data
 const business = {
   name: "NOSH",
-  slogan: "Comida que golpea",
+  slogan: "Más que solo comida.",
   schedule: {
     weekday: { open: 11, close: 23 },
     weekend: { open: 11, close: 2 }   // closes next day at 2am
@@ -39,18 +40,14 @@ const menuItems = [
 
 // Returns greeting based on current hour
 const getGreeting = (hour) => {
-  if (hour < 12) return "Good Morning"
-  if (hour < 18) return "Good Afternoon"
-  return "Good Evening"
+  if (hour < 12) return "Buenos días"
+  if (hour < 18) return "Buenas tardes"
+  return "Buenas noches"
 }
 
-// Calculates total price of an order
-const calculateOrderTotal = (price, quantity, taxRate = 0.16) => {
-  const subtotal = price * quantity
-  const tax = subtotal * taxRate
-  const total = subtotal + tax
-  return total.toFixed(2)
-}
+// Calculates total price of an order line (listed prices are final)
+const calculateOrderTotal = (price, quantity) =>
+  Math.round(price * quantity * 100) / 100
 
 // Return products filtered by category
 const getProductsByCategory = (items, category) =>
@@ -164,6 +161,56 @@ const fetchMenuImages = async () => {
   }
 }
 
+// ========================
+// CART STATE
+// ========================
+
+let cart = sanitizeCart(getData("cart"), menuItems)
+
+// Draws the cart on screen from the cart state
+const renderCart = () => {
+  const itemsList = document.getElementById("cart-items")
+  const emptyMessage = document.getElementById("cart-empty")
+  const totalElement = document.getElementById("cart-total")
+  if (!itemsList || !emptyMessage || !totalElement) return
+
+  // Combine each cart line with its product data (name, price) from the menu
+  const lines = cart
+    .map(line => {
+      const product = menuItems.find(item => item.value === line.value)
+      return product ? { ...product, quantity: line.quantity } : null
+    })
+    .filter(Boolean)
+
+  itemsList.innerHTML = lines.map(({ value, name, price, quantity }) => `
+    <li class="cart__item">
+      <span class="cart__name">${name}</span>
+      <div class="cart__controls">
+        <button type="button" data-action="decrease" data-value="${value}"
+                aria-label="Quitar una unidad de ${name}">−</button>
+        <span class="cart__quantity">${quantity}</span>
+        <button type="button" data-action="increase" data-value="${value}"
+                aria-label="Agregar una unidad de ${name}">+</button>
+      </div>
+      <span class="cart__line-total">${formatPrice(price * quantity)}</span>
+      <button type="button" class="cart__remove" data-action="remove" data-value="${value}"
+              aria-label="Quitar ${name} del pedido">Quitar</button>
+    </li>
+  `).join("")
+
+  emptyMessage.hidden = lines.length > 0
+  totalElement.textContent = formatPrice(getCartTotal(cart, menuItems))
+}
+
+renderCart()
+
+// The single entry point to change the cart: update, save and redraw
+const updateCart = (newCart) => {
+  cart = newCart
+  saveData("cart", cart)
+  renderCart()
+}
+
 // ================
 // DOM MANIPULATION
 // ================
@@ -173,7 +220,7 @@ const heroTitle = document.querySelector("#hero h2")
 const heroSubtitle = document.querySelector("#hero p")
 
 if (heroTitle) {
-  heroTitle.textContent= `${getGreeting(currentTime)}, welcome to ${business.name}!` 
+  heroTitle.textContent= `${getGreeting(currentTime)}, bienvenido a ${business.name}!` 
 }
 
 if (heroSubtitle) {
@@ -215,6 +262,11 @@ if (menuContainer){
                 <h4>${name}</h4>
                 <p>${description}</p>
                 <span class="price">${formatPrice(price)}</span>
+                <button type="button"
+                  class="product__add"
+                  data-action="add"
+                  data-value="${value}"
+                  aria-label="Agregar ${name} al pedido">Agregar</button>
               </div>
             </article>
           `).join("")}
@@ -319,6 +371,15 @@ const menuContainerEl = document.getElementById("menu-container")
 
 if (menuContainerEl) {
   menuContainerEl.addEventListener("click", (e) => {
+    // 1. Did the user click an "Agregar" button?
+    const addButton = e.target.closest("button[data-action='add']")
+
+    if (addButton) {
+      updateCart(addToCart(cart, addButton.dataset.value))
+      return
+    }
+
+    // 2. Otherwise, the old behavior: select the card
     const product = e.target.closest(".product")
     if (!product) return
 
@@ -334,6 +395,47 @@ if (menuContainerEl) {
     }
 
     saveData("selectedProduct", product.dataset.value)
+  })
+}
+
+// Cart buttons (−, +, Quitar) via event delegation
+const cartElement = document.getElementById("cart")
+
+if (cartElement) {
+  cartElement.addEventListener("click", (e) => {
+    const button = e.target.closest("button[data-action]")
+    if (!button) return
+
+        const { action, value } = button.dataset
+
+    let nextCart
+
+    switch (action) {
+      case "increase":
+        nextCart = changeQuantity(cart, value, 1)
+        break
+      case "decrease":
+        nextCart = changeQuantity(cart, value, -1)
+        break
+      case "remove":
+        nextCart = removeFromCart(cart, value)
+        break
+      default:
+        return
+    }
+
+    updateCart(nextCart)
+    // Keep keyboard focus after the cart is redrawn
+    const sameButton = document.querySelector(
+      `#cart-items button[data-action="${action}"][data-value="${value}"]`
+    )
+    const fallback = document.getElementById("cart-title")
+
+    if (sameButton) {
+      sameButton.focus()
+    } else if (fallback) {
+      fallback.focus()
+    }
   })
 }
 

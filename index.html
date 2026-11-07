@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>NOSH — Comida que golpea</title>
+        <title>NOSH - Más que solo comida.</title>
         <meta name="description" content="NOSH es un spot de comida rápida en Caracas. Burgers, hot dogs y más en un ambiente relajado y urbano.">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,7 +15,7 @@
         <header>
             <div class="header-brand">
                 <h1>NOSH</h1>
-                <p>Una experiencia fuera de lo habitual</p>
+                <p>Más que solo comida.</p>
                 <span id="business-status"></span>
             </div>
             <button id="menu-toggle" aria-label="Toggle navigation menu">
@@ -68,6 +68,20 @@
             <!-- ORDER FORM — Formulario de pedido en línea -->
             <section id="order">
                 <h2>Haz tu pedido</h2>
+
+                <div class="cart" id="cart">
+                    <h3 id="cart-title" tabindex="-1">Mi pedido</h3>
+
+                    <ul class="cart__items" id="cart-items"></ul>
+
+                    <p class="cart__empty" id="cart-empty">
+                        Tu pedido está vacío. Agrega productos desde el menú.
+                    </p>
+
+                    <p class="cart__total" aria-live="polite">
+                        Total: <strong id="cart-total">$0.00</strong>
+                    </p>
+                </div>
 
                 <form action="#" method="POST">
                     <label for="full-name">Nombre y Apellido</label>
